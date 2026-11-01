@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OTTOMIX</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="OTTOMIX copies YouTube playlists and mixes into Spotify, with a review step for every match. Setup guide and privacy policy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one narrow reading column; the brand's mirrored playlist rows open the page, then setup and privacy as plain documents. */
+:root {
+  color-scheme: dark;
+  --ink: #17171B;        /* charcoal ground */
+  --ink-2: #1F1F25;      /* raised surface */
+  --line: #34343C;
+  --paper: #F3F2EF;      /* off-white text */
+  --muted: #A9A8B0;
+  --amber: #F2A007;
+  --amber-hi: #FFB627;
+  --look: #7AB0FF;       /* "needs a look" blue */
+  --display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --col: 46rem;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--ink); color: var(--paper);
+  font: 400 17px/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--amber-hi); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: var(--col); margin: 0 auto; }
+.wide { max-width: 64rem; margin: 0 auto; }
+
+/* header */
+header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 22px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand img.mark { width: 34px; height: 34px; }
+.brand img.word { height: 17px; width: auto; }
+nav { display: flex; gap: 22px; font-weight: 600; font-size: 15px; }
+nav a { color: var(--muted); text-decoration: none; }
+nav a:hover { color: var(--paper); }
+
+/* hero */
+.hero { display: grid; gap: 28px; padding-block: 40px 28px; }
+.hero h1 {
+  font: 700 clamp(2rem, 5.4vw, 3.4rem)/1.08 var(--display); letter-spacing: -.01em;
+  margin: 0; text-wrap: balance;
+}
+.hero h1 em { font-style: normal; color: var(--amber); }
+.hero p.lede { font-size: 1.2rem; color: var(--muted); margin: 0; max-width: 36rem; }
+.price { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 600; font-size: 15px; }
+.chip b { color: var(--amber); }
+
+/* the mirror motif from the icon: original rows on the left, the copy on the right */
+.mirror { display: grid; grid-template-columns: 1fr 2px 1fr; gap: 18px; align-items: center; max-width: 26rem; padding-block: 6px; }
+.mirror .axis { align-self: stretch; background: repeating-linear-gradient(var(--line) 0 6px, transparent 6px 12px); }
+.rows { display: grid; gap: 10px; }
+.rows i { display: block; height: 10px; border-radius: 6px; background: var(--paper); }
+.rows.copy i { background: var(--amber); }
+.rows.orig i { justify-self: end; }
+.rows i:nth-child(1) { width: 92%; } .rows i:nth-child(2) { width: 48%; } .rows i:nth-child(3) { width: 72%; }
+
+/* screenshots */
+.shots { display: grid; gap: 18px; padding-block: 18px 8px; }
+figure { margin: 0; display: grid; gap: 8px; }
+figure img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); display: block; }
+figcaption { color: var(--muted); font-size: 15px; }
+.shots .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 720px) { .shots .pair { grid-template-columns: 1fr; } }
+
+/* document sections */
+section.doc { padding-block: 56px 8px; border-top: 1px solid var(--line); margin-top: 48px; }
+h2 { font: 700 clamp(1.4rem, 3vw, 1.9rem)/1.2 var(--display); margin: 0 0 8px; text-wrap: balance; }
+h3 { font: 700 1.1rem/1.3 var(--body); margin: 28px 0 6px; }
+.eyebrow { font: 600 13px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); margin: 0 0 12px; }
+p, li { max-width: 65ch; }
+.muted { color: var(--muted); }
+
+ol.steps { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 14px; counter-reset: s; }
+ol.steps > li {
+  counter-increment: s; display: grid; grid-template-columns: 2.4rem 1fr; gap: 14px;
+  background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 18px 14px; max-width: none;
+}
+ol.steps > li::before {
+  content: counter(s); font: 700 1rem/2.4rem var(--display); text-align: center;
+  width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--amber); color: var(--ink);
+}
+ol.steps > li > div { min-width: 0; }
+ol.steps h3 { margin: 4px 0 4px; }
+ol.steps p { margin: 0 0 6px; }
+ol.steps ul { margin: 6px 0 0; padding-left: 1.1rem; }
+code, .uri { font: 500 .88em/1.4 var(--mono); background: #0F0F12; border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; overflow-wrap: anywhere; }
+
+.note { border-left: 3px solid var(--look); background: var(--ink-2); padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 18px 0; max-width: 65ch; }
+.note p { margin: 0; }
+
+dl.qa { display: grid; gap: 4px; margin: 20px 0 0; }
+dl.qa dt { font-weight: 700; margin-top: 16px; }
+dl.qa dd { margin: 0; color: var(--muted); max-width: 65ch; }
+
+.policy h3 { font-size: 1.05rem; }
+.policy ul { padding-left: 1.2rem; }
+.policy li { margin-bottom: 4px; }
+.date { font: 500 14px/1 var(--mono); color: var(--muted); }
+
+footer { border-top: 1px solid var(--line); margin-top: 64px; padding-block: 28px 40px; color: var(--muted); font-size: 14px; display: grid; gap: 8px; }
+footer p { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="wide">
+  <header>
+    <a class="brand" href="#top" aria-label="OTTOMIX home">
+      <img class="mark" src="img/mark.svg" alt="">
+      <img class="word" src="img/wordmark-white.svg" alt="OTTOMIX">
+    </a>
+    <nav aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#setup">Setup</a>
+      <a href="#terms">Terms</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </header>
+</div>
+
+<main id="top">
+  <div class="wrap hero">
+    <div class="mirror" aria-hidden="true">
+      <div class="rows orig"><i></i><i></i><i></i></div>
+      <div class="axis"></div>
+      <div class="rows copy"><i></i><i></i><i></i></div>
+    </div>
+    <h1>Your YouTube playlist, <em>mirrored in Spotify.</em></h1>
+    <p class="lede">OTTOMIX copies a YouTube playlist or mix into a Spotify playlist with one click. You check the few songs it isn't sure about before anything is saved.</p>
+    <div class="price">
+      <span class="chip">Single songs <b>free</b></span>
+      <span class="chip">Playlists and mixes <b>$2.99 once</b></span>
+      <span class="chip">Chrome extension</span>
+    </div>
+  </div>
+
+  <div class="wide shots" id="how">
+    <figure>
+      <img src="img/1-review.jpg" width="1280" height="800" alt="The OTTOMIX panel next to a YouTube playlist: 127 songs ready, 6 to check, and a destination picker set to an existing playlist.">
+      <figcaption>Matches land in a panel beside the playlist. Songs it's sure about are ready; the rest wait for a quick look. Add to a new playlist or one you already have, without duplicates.</figcaption>
+    </figure>
+    <div class="pair">
+      <figure>
+        <img src="img/2-video-songs.jpg" width="1280" height="800" loading="lazy" alt="The song card listing two songs YouTube identified in a fan edit, each matched on Spotify at 100%.">
+        <figcaption>On any video, add the songs YouTube recognized in it. Liked Songs is the default.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/3-tab.jpg" width="1280" height="800" loading="lazy" alt="The minimized OTTOMIX tab on the left edge showing Done and 6 songs to check.">
+        <figcaption>Minimize the panel and keep watching. The tab shows progress, then Done.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <section class="wrap doc" id="setup">
+    <p class="eyebrow">Setup · about 5 minutes</p>
+    <h2>Connect OTTOMIX to your Spotify</h2>
+    <p>OTTOMIX talks to Spotify through a small developer app that you create on your own Spotify account. It's free and takes a few minutes. Your songs and your login never pass through anyone else's servers.</p>
+    <div class="note"><p><b>Before you start:</b> Spotify only lets developer apps run when the account that owns the app has Spotify Premium.</p></div>
+
+    <ol class="steps">
+      <li><div>
+        <h3>Install OTTOMIX and open it</h3>
+        <p>Add OTTOMIX from the Chrome Web Store, then click its icon in the toolbar (pin it from the puzzle-piece menu so it's easy to find). The window that opens shows a <b>Redirect URI</b> with a Copy button. You'll need it in the next step.</p>
+      </div></li>
+      <li><div>
+        <h3>Create your Spotify app</h3>
+        <p>Go to the <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">Spotify developer dashboard</a>, sign in, and choose <b>Create app</b>.</p>
+        <ul>
+          <li>Name and description: anything, for example "My OTTOMIX".</li>
+          <li>Redirect URIs: paste the one from OTTOMIX. It looks like <span class="uri">https://&lt;id&gt;.chromiumapp.org/</span></li>
+          <li>Which API: tick <b>Web API</b>, agree to the terms, and save.</li>
+        </ul>
+      </div></li>
+      <li><div>
+        <h3>Paste your Client ID</h3>
+        <p>Open the app's <b>Settings</b> in the dashboard, copy the <b>Client ID</b>, paste it into OTTOMIX and click <b>Save</b>. OTTOMIX never asks for a Client Secret.</p>
+      </div></li>
+      <li><div>
+        <h3>Connect Spotify</h3>
+        <p>Click <b>Connect Spotify</b> and approve the permissions. OTTOMIX asks to read your playlists and Liked Songs (to avoid duplicates) and to add songs to them.</p>
+      </div></li>
+      <li><div>
+        <h3>Convert a playlist</h3>
+        <p>Open any YouTube playlist or mix and click <b>Convert to Spotify</b>. The first time, you'll be asked to unlock playlist conversion for a one-time $2.99. Adding single songs from a video stays free.</p>
+      </div></li>
+    </ol>
+
+    <h3 id="faq">Good to know</h3>
+    <dl class="qa">
+      <dt>Can friends use my Spotify app?</dt>
+      <dd>Yes, up to five Spotify accounts per app, including yours. Add their Spotify email under <b>User Management</b> in your app's settings and give them your Client ID. Each person still installs OTTOMIX themselves.</dd>
+      <dt>I paid on another computer.</dt>
+      <dd>Click <b>Already paid? Log in</b> in the OTTOMIX window and enter the email you paid with. You'll get a login link.</dd>
+      <dt>How long does a big playlist take?</dt>
+      <dd>Around 5–10 minutes for 1,000 songs. OTTOMIX paces itself to stay inside Spotify's limits. If Spotify asks it to wait longer than two minutes, it pauses and you can resume later.</dd>
+      <dt>"Spotify rejected the redirect URI"</dt>
+      <dd>The Redirect URI in your Spotify app has to match the one in the OTTOMIX window exactly, including the slash at the end.</dd>
+      <dt>"This Spotify account isn't on your app's user list"</dt>
+      <dd>You're logged in to Spotify with an account that isn't the app's owner. Add it under User Management, or log in with the owner account.</dd>
+    </dl>
+  </section>
+
+  <section class="wrap doc policy" id="terms">
+    <p class="eyebrow">Purchase terms</p>
+    <h2>What the $2.99 covers</h2>
+    <p>The unlock is a one-time purchase of OTTOMIX's playlist and mix conversion as it works when you buy it. It isn't a subscription, and it doesn't include a promise of future updates or ongoing service.</p>
+    <ul>
+      <li>OTTOMIX depends on YouTube and Spotify, which change their sites and services without notice. We'll do our best to keep OTTOMIX working through those changes, but we can't guarantee it will keep working indefinitely.</li>
+      <li>Updates we do release are free for everyone who has unlocked OTTOMIX.</li>
+      <li>Adding single songs is free, so you can see how OTTOMIX works with your Spotify before you buy.</li>
+    </ul>
+  </section>
+
+  <section class="wrap doc policy" id="privacy">
+    <p class="eyebrow">Privacy policy</p>
+    <h2>What OTTOMIX does with your data</h2>
+    <p class="date">Effective November 1, 2026</p>
+    <p>OTTOMIX is a Chrome extension. It has no servers of its own, shows no ads, and doesn't use analytics. Everything it keeps stays in your browser.</p>
+
+    <h3>What it reads</h3>
+    <ul>
+      <li>On YouTube pages where you use it: video titles, channel names, playlist names, and the songs YouTube lists in a video's Music section. It reads these only to find the same songs on Spotify.</li>
+    </ul>
+
+    <h3>What it sends, and to whom</h3>
+    <ul>
+      <li><b>Spotify</b>: searches built from those song titles, and the playlist changes you ask for, using your own Spotify login and developer app. Spotify's own <a href="https://www.spotify.com/legal/privacy-policy/" target="_blank" rel="noopener">privacy policy</a> applies there.</li>
+      <li><b>ExtensionPay</b> (extensionpay.com), which handles the $2.99 unlock: a random ID for your install and whether you've paid. If you buy or log in, ExtensionPay gets your email. Card payments are processed by Stripe; OTTOMIX never sees your card details.</li>
+    </ul>
+
+    <h3>What it stores on your computer</h3>
+    <ul>
+      <li>Your Spotify Client ID and login tokens.</li>
+      <li>Your settings, such as whether the YouTube buttons are shown.</li>
+      <li>Remembered matches between YouTube videos and Spotify songs, so repeats don't need a new search. Unsure matches expire after 3 days, confirmed ones after 30.</li>
+      <li>Whether playlist conversion is unlocked.</li>
+    </ul>
+
+    <h3>What it doesn't do</h3>
+    <ul>
+      <li>It doesn't sell, share or rent your data, or use it for advertising.</li>
+      <li>It doesn't read your browsing history or any site other than YouTube, Spotify's login page and ExtensionPay's pages.</li>
+      <li>It doesn't play music or keep copies of songs.</li>
+    </ul>
+
+    <h3>Deleting your data</h3>
+    <ul>
+      <li><b>Clear app cache</b> in the OTTOMIX window removes remembered matches and any playlist in progress.</li>
+      <li><b>Disconnect</b> removes your Spotify login from the extension. You can also revoke access at <a href="https://www.spotify.com/account/apps/" target="_blank" rel="noopener">spotify.com/account/apps</a>.</li>
+      <li>Uninstalling OTTOMIX deletes everything it stored.</li>
+    </ul>
+
+    <h3>Changes and contact</h3>
+    <p>If this policy changes, the new version will be posted here with a new date. Questions go to the developer email shown on OTTOMIX's Chrome Web Store page.</p>
+  </section>
+</main>
+
+<div class="wrap">
+  <footer>
+    <p>OTTOMIX is an independent project. It isn't affiliated with, endorsed by or sponsored by Spotify or YouTube.</p>
+    <p>Spotify is a trademark of Spotify AB. YouTube is a trademark of Google LLC.</p>
+  </footer>
+</div>
+
+</body>
+</html>
